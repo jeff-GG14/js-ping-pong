@@ -1,0 +1,131 @@
+let leftPaddle;
+let rightPaddle;
+let ball;
+let scoreLeft = 0;
+let scoreRight = 0;
+
+function setup() {
+  createCanvas(800, 400);
+  leftPaddle = new Paddle(10, UP_ARROW, DOWN_ARROW);
+  rightPaddle = new Paddle(width - 20, 87, 83); // Códigos ASCII para 'W' e 'S'
+  ball = new Ball();
+}
+
+function draw() {
+  background(0);
+  leftPaddle.show();
+  leftPaddle.update();
+  rightPaddle.show();
+  rightPaddle.update();
+  ball.show();
+  ball.update();
+
+  // Check collision with paddles
+  if (ball.hitsPaddle(leftPaddle)) {
+    ball.changeDirection();
+    scoreLeft++;
+  } else if (ball.hitsPaddle(rightPaddle)) {
+    ball.changeDirection();
+    scoreRight++;
+  }
+
+  // Check if ball goes out of bounds
+  if (ball.isOut()) {
+    ball.reset();
+  }
+
+  // Draw scores
+  fill(255);
+  textSize(20);
+  text("PONTOS DA ESQUERDA: " + scoreLeft, 10, 40);
+  text("PONTOS DA DIREITA: " + scoreRight, width - 230, 30);
+}
+
+class Paddle {
+  constructor(x, upKey, downKey) {
+    this.width = 10;
+    this.height = 100;
+    this.x = x;
+    this.y = height / 2 - this.height / 2;
+    this.speed = 10;
+    this.upKey = upKey;
+    this.downKey = downKey;
+  }
+
+  show() {
+    fill(255);
+    rect(this.x, this.y, this.width, this.height);
+  }
+
+  update() {
+    if (keyIsDown(this.upKey) && this.y > 0) {
+      this.y -= this.speed;
+    } else if (keyIsDown(this.downKey) && this.y < height - this.height) {
+      this.y += this.speed;
+    }
+  }
+}
+
+class Ball {
+  constructor() {
+    this.x = width / 2;
+    this.y = height / 2;
+    this.radius = 10;
+    this.speedX = 5;
+    this.speedY = 5;
+    this.directionX = 1;
+    this.directionY = 1;
+  }
+
+  show() {
+    fill(255);
+    ellipse(this.x, this.y, this.radius * 2);
+  }
+
+  update() {
+    this.x += this.speedX * this.directionX;
+    this.y += this.speedY * this.directionY;
+
+    // Check collision with walls
+    if (this.y + this.radius >= height || this.y - this.radius <= 0) {
+      this.directionY *= -1;
+    }
+  }
+
+  hitsPaddle(paddle) {
+    if (
+      this.x + this.radius >= paddle.x &&
+      this.x - this.radius <= paddle.x + paddle.width &&
+      this.y + this.radius >= paddle.y &&
+      this.y - this.radius <= paddle.y + paddle.height
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  changeDirection() {
+    this.directionX *= -1;
+  }
+
+  isOut() {
+    return this.x - this.radius > width || this.x + this.radius < 0;
+  }
+
+  reset() {
+    this.x = width / 2;
+    this.y = height / 2;
+  }
+}
+function setup() {
+  createCanvas(800, 400);
+  leftPaddle = new Paddle(10, 83, 87); //
+  rightPaddle = new Paddle(width - 20, DOWN_ARROW, UP_ARROW); //
+  ball = new Ball();
+}
+function setup() {
+  createCanvas(800, 400);
+  leftPaddle = new Paddle(10, 87, 83); //
+  rightPaddle = new Paddle(width - 20, UP_ARROW, DOWN_ARROW); //
+  ball = new Ball();
+}
